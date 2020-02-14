@@ -46,6 +46,22 @@
   copy:
     src=../files/preparelab_ccn.sh dest=/tmp/preparelab_ccn.sh mode=0777
 
+- name: Install jq command-line JSON processor
+  shell: "curl -L https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/bin/jq && chmod +x /usr/bin/jq"
+  become: true
+
+- name: Install Git a version-control system
+  yum:
+    name:
+      - "git"
+  become: true
+
+- name: Install wget
+  yum:
+    name:
+      - "wget"
+  become: true  
+
 - name: Execute the preparelab_ccn.sh
   shell: /tmp/preparelab_ccn.sh -c {{ num_users }} -m {{ module_type }} -p {{ workshop_openshift_user_password }}
 
