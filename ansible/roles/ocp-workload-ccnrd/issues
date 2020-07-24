@@ -1,0 +1,65 @@
+
+
+WHAT sHould happen
+all users should be able to log into
+gogs - and see their m1, m2 source codes - this is fine
+keycloak
+che 
+rhamt
+all users should have access to jenkins 
+
+each user should have an inventory and catalog
+
+ISSUES
+git failed ---bastion didn't have git
+
+rhamt users not set - looks like keycloak not setup -- i see errors in the log
+--- script couldn't get the token from rhmat sso,however when running from command line locally and on bastion it worked
+-- ran it again in playbookk but it failed
+-- looks like issue is jq isn't isntalled
+
+codeready users not set
+-- looks like cause is SSO_TOKEN not set correctly
+--stackid not set
+-- workspaces not created
+-- able to get access token when running curl command outside playbook
+-- looks like issue is jq isnt installed
+
+-- however, workspaces not pre-creatednn
+ --- looks like wget is missing
+
+jenkins doesn't seem to be working for non-admin users -- TODO -- might be fine go through the lab
+
+not all gogs users are sets -- fixed
+
+might need to change USERCOUNT in preparelab_cnn -- doesn't seem to take the passed in user
+
+issue - http://guides-m1-labs-infra.apps.proxy-test.redhatgov.io/workshop/cloudnative/lab/migrate-to-jboss-eap - step 14 - link to openfhist console is wrong..internal
+---check if same with rhpds
+--no it's not becuser oc whoami --show-server 
+-- in both envs make sure to sign on using the oc command and the external server name
+
+
+TO TRY
+attempt on rhpds - maybe..make sure you log into bastion and log in as admin, make sure git and jq are installed
+attempt to install codeready worksapaces 2
+
+
+users
+starts with user0..create user0 for openshift - just leave as is...user0 could be professor #
+when testing use user0
+
+-- in both envs make sure to sign on using the oc command and the external server name before 
+
+TO Fix
+does it use the user_count set in the env before running the playbook?
+--ansible playbook should be -e"num_users=${USER_COUNT}" \ ..fix that.
+
+maybe add a task to make sure git is present in workload.yml?
+maybe add a task to make sure jq is installed
+maybe add a task to make sure wget is installed
+
+FOR SEC
+make sure to run the pre-load tasks for devsecops, make sure the tools like git,jq,wget are installed
+CREATE user0-user80 on openshift
+for CCN create up to 80

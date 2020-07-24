@@ -541,6 +541,9 @@ if [ -z "${MODULE_TYPE##*m1*}" ] ; then
    -d 'grant_type=password' \
   -d 'client_id=admin-cli' | jq -r '.access_token')
 
+  #DEBUG
+  echo "DEBUG RESULT_TOKEN: $RESULT_TOKEN"
+
  echo -e "Updating a master realm with RH-SSO theme \n"
  RES=$(curl -s -w '%{http_code}' -o /dev/null  -k -X PUT https://secure-rhamt-web-console-labs-infra.$HOSTNAME_SUFFIX/auth/admin/realms/master/ \
    -H "Content-Type: application/json" \
@@ -651,10 +654,14 @@ echo "Keycloak credentials: $KEYCLOAK_USER / $KEYCLOAK_PASSWORD"
 echo "URL: http://keycloak-labs-infra.${HOSTNAME_SUFFIX}"
 
 # Create Che users
+#DEBUG
+echo "DEBUG creating Che Users"
 for i in $(eval echo "{0..$USERCOUNT}") ; do
  USERNAME=user${i}
  FIRSTNAME=User${i}
  LASTNAME=Developer
+ #DEBUG
+ echo "DEBUG creating user, $USERNAME"
  curl -v -H "Authorization: Bearer ${SSO_TOKEN}" -H "Content-Type:application/json" -d '{"username":"user'${i}'","enabled":true,"emailVerified": true,"firstName": "User'${i}'","lastName": "Developer","email": "user'${i}'@no-reply.com", "credentials":[{"type":"password","value":"'${GOGS_PWD}'","temporary":false}]}' -X POST "http://keycloak-labs-infra.${HOSTNAME_SUFFIX}/auth/admin/realms/codeready/users"
 done
 
@@ -695,9 +702,14 @@ while [ 1 ]; do
 done
 
 # Pre-create workspaces for users
+#DEBUG
+echo "DEBUG creating workspaces"
 for i in $(eval echo "{0..$USERCOUNT}") ; do
+echo "DEBUG creating workspace for user${i}"
  SSO_CHE_TOKEN=$(curl -s -d "username=user${i}&password=${GOGS_PWD}&grant_type=password&client_id=admin-cli" \
   -X POST http://keycloak-labs-infra.${HOSTNAME_SUFFIX}/auth/realms/codeready/protocol/openid-connect/token | jq  -r '.access_token')
+
+ #echo "DEBUG SSO_CHE_TOKEN=$SSO_CHE_TOKEN"
 
  TMPWORK=$(mktemp)
  wget https://raw.githubusercontent.com/ecwpz91/cloud-native-workshop-v2-infra/ocp-3.11/files/workspace.json
